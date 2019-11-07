@@ -1,0 +1,30 @@
+{
+  "name": "react-native-packager",
+  "version": "0.5.0",
+  "description": "Automatize React Native builds and versioning",
+  "bin": {
+    "rnpack": "./dist/index.js"
+  },
+  "scripts": {
+    "start": "ts-node index.ts",
+    "build": "tsc",
+    "deploy": "npm run build && npm link ."
+  },
+  "author": "Giacomo Cerquone",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "prompts": "^2.2.1",
+    "yargs": "^14.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.6",
+    "@types/prompts": "^2.0.2",
+    "ts-node": "^8.4.1",
+    "@types/yargs": "^13.0.3",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "eslint": "^6.6.0",
+    "typescript": "^3.7.2"
+  }
+}
