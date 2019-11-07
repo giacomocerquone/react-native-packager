@@ -23,19 +23,10 @@ const argv: Arguments = yargs.options({
     path.join(process.cwd(), argv.bldSettings)
   );
 
-  // TODO need to await on both
-
   if (argv._[0] === "android") {
     androidArgvChecks(argv);
     androidSettingsChecks(sets, argv.bldSettings);
-    try {
-      await androidProc(argv.gradlePath, argv.gradleWPath, sets);
-      console.log(
-        "Android build finished. Apk will be at android/app/build/outputs/apk/app-release.apk"
-      );
-    } catch (e) {
-      console.error(e);
-    }
+    androidProc(argv.gradlePath, argv.gradleWPath, sets);
   } else if (argv._[0] === "ios") {
     iosArgvChecks(argv);
     iosProc(argv.iosPath, sets);

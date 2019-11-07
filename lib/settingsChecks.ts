@@ -1,4 +1,5 @@
 import { Settings } from "../types/settings";
+import { error } from "./log";
 
 export function androidSettingsChecks(sets: Settings, setsFilename: string) {
   const keyStorePwd = sets.KEYSTORE_PWD;
@@ -8,7 +9,7 @@ export function androidSettingsChecks(sets: Settings, setsFilename: string) {
   const keyStoreFile = sets.KEYSTORE_FILE;
 
   if (!keyStorePwd || !keyPwd || !keyAlias || !AppId || !keyStoreFile) {
-    throw new Error(
+    error(
       `\nYou must export the following variables from ${setsFilename}:\n
 - KEYSTORE_FILE
 - KEYSTORE_ALIAS
@@ -16,5 +17,6 @@ export function androidSettingsChecks(sets: Settings, setsFilename: string) {
 - KEY_PWD
 - APP_ID\n`
     );
+    return;
   }
 }

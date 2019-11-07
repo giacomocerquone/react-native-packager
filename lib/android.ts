@@ -1,9 +1,10 @@
 import path from "path";
 import prompts from "prompts";
 import { readFileSync, writeFileSync } from "fs";
-import { exec, spawnSync, execSync } from "child_process";
+import { spawn } from "child_process";
 
 import { Settings } from "../types/settings";
+import { info, error } from "./log";
 
 export default async function androidProc(
   gradle: string,
@@ -19,7 +20,7 @@ export default async function androidProc(
   try {
     gradleFile = readFileSync(gradlePath, "utf8");
   } catch (e) {
-    console.error("No gradle file found, specify it with --gradlePath");
+    error("No gradle file found, specify it with --gradlePath");
     throw e;
   }
 
@@ -44,7 +45,8 @@ export default async function androidProc(
   ]);
 
   if (!answers.versionName || !answers.versionCode) {
-    throw new Error("you must specify a versionName and versionCode");
+    error("you must specify a versionName and versionCode");
+    return;
   }
 
   gradleFile = gradleFile.replace(
@@ -60,7 +62,7 @@ export default async function androidProc(
   try {
     writeFileSync(gradlePath, gradleFile);
   } catch (e) {
-    console.error("Error while writing on the gradle file");
+    error("Error while writing on the gradle file");
     throw e;
   }
 
@@ -72,14 +74,33 @@ export default async function androidProc(
     APP_ID
   } = bldSettings;
 
-  const stdOut = execSync(
+  const proc = spawn(
     `${path.basename(
       gradleWPath
     )} clean assembleRelease -PANDROID_APP_ID=${APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`,
     {
-      cwd: path.dirname(gradleWPath)
+      cwd: path.dirname(gradleWPath),
+      shell: true,
+      detached: false, // TODO I wish the terminal to stay put when erroring instead of closing itself
+      stdio: [0, "pipe", "pipe"]
     }
   );
 
-  console.log(stdOut);
+  proc.on("exit", function(code: Buffer) {
+    if (code.toString() === "0") {
+      info(
+        "Android build finished. Apk will be at android/app/build/outputs/apk/app-release.apk"
+      );
+    } else {
+      error("A problem occurred while building");
+    }
+    process.exit();
+  });
+
+  proc!.stderr!.on("data", function(data) {
+    console.log(data.toString());
+  });
+  proc!.stdout!.on("data", data => {
+    console.log(data.toString());
+  });
 }
