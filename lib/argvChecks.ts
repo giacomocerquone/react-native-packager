@@ -18,14 +18,19 @@ export function argvChecks(argv: Arguments) {
 }
 
 export function androidArgvChecks(argv: Arguments) {
-  if (!argv["gradlePath"]) {
+  if (!argv.gradlePath) {
     warning(
       "build.gradle path defaulting to ./android/app/build.gradle\nIf you want a different path specify it with --gradlePath"
     );
   }
-  if (!argv["gradleWPath"]) {
+  if (!argv.gradleWPath) {
     warning(
       "gradleW path defaulting to ./android/gradlew\nIf you want a different path specify it with --gradleWPath"
+    );
+  }
+  if (!argv.bundle) {
+    warning(
+      "Bundle defaulting to apk\nIf you want a different bundle specify it with --bundle aab/apk"
     );
   }
 }

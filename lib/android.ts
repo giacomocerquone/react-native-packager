@@ -9,11 +9,13 @@ import { info, error } from "./log";
 export default async function androidProc(
   gradle: string,
   gradleW: string,
+  bundle: string,
   bldSettings: Settings
 ) {
   const gradlePath =
     gradle || path.join(process.cwd(), "./android/app/build.gradle");
   const gradleWPath = gradleW || path.join(process.cwd(), "./android/gradlew");
+  const bundleType = bundle === "aab" ? "bundleRelease" : "assembleRelease";
 
   let gradleFile: string;
 
@@ -77,7 +79,7 @@ export default async function androidProc(
   const proc = spawn(
     `${path.basename(
       gradleWPath
-    )} clean assembleRelease -PANDROID_APP_ID=${APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`,
+    )} clean ${bundleType} -PANDROID_APP_ID=${APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`,
     {
       cwd: path.dirname(gradleWPath),
       shell: true,

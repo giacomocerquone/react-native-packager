@@ -4,4 +4,5 @@ export interface Arguments {
   iosPath: string;
   bldSettings: string;
   gradleWPath: string;
+  bundle: string;
 }

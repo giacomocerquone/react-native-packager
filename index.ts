@@ -2,6 +2,7 @@
 
 const yargs = require("yargs");
 import path from "path";
+
 import { argvChecks, androidArgvChecks, iosArgvChecks } from "./lib/argvChecks";
 import androidProc from "./lib/android";
 import iosProc from "./lib/ios";
@@ -12,6 +13,7 @@ import { Settings } from "./types/settings";
 
 const argv: Arguments = yargs.options({
   bldSettings: { type: "string" },
+  bundle: { type: "string" },
   gradlePath: { type: "string" },
   gradleWPath: { type: "string" },
   iosPath: { type: "string" }
@@ -26,7 +28,7 @@ const argv: Arguments = yargs.options({
   if (argv._[0] === "android") {
     androidArgvChecks(argv);
     androidSettingsChecks(sets, argv.bldSettings);
-    androidProc(argv.gradlePath, argv.gradleWPath, sets);
+    androidProc(argv.gradlePath, argv.gradleWPath, argv.bundle, sets);
   } else if (argv._[0] === "ios") {
     iosArgvChecks(argv);
     iosProc(argv.iosPath, sets);
