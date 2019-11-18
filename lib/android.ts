@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from "fs";
 import { spawn } from "child_process";
 
 import { Settings } from "../types/settings";
-import { info, error } from "./log";
+import { info, error } from "../utils/log";
 
 export default async function androidProc(
   gradle: string,
@@ -91,7 +91,7 @@ export default async function androidProc(
   proc.on("exit", function(code: Buffer) {
     if (code.toString() === "0") {
       info(
-        "Android build finished. Apk will be at android/app/build/outputs/apk/app-release.apk"
+        "Android build finished. Build will be at android/app/build/outputs/[apk/app-release.apk]/[aab/app.aab]"
       );
     } else {
       error("A problem occurred while building");

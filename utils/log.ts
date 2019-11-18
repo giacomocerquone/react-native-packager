@@ -1,9 +1,9 @@
 import chalk from "chalk";
 
 const logTypes: any = {
-  warning: (text: string) => chalk.yellowBright(`[! Warning]\n${text}`),
-  error: (text: string) => chalk.red(`[X Error]\n${text}`),
-  info: (text: string) => chalk.green(`[V Info]\n${text}`)
+  warning: (text: string) => chalk.yellowBright(`\n[! Warning]\n${text}`),
+  error: (text: string) => chalk.red(`\n[X Error]\n${text}`),
+  info: (text: string) => chalk.green(`\n[V Info]\n${text}`)
 };
 
 function log(message: string, type: "info" | "warning" | "error") {

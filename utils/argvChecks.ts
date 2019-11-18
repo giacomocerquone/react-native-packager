@@ -1,19 +1,17 @@
 import { Arguments } from "../types/arguments";
-import { warning, error } from "./log";
+import { warning } from "./log";
 
 export function argvChecks(argv: Arguments) {
   if (!argv.bldSettings) {
-    error(
-      "\n\nYou must specify your build settings through --bldSettings ./your/file\n"
+    throw new Error(
+      "You must specify your build settings through --bldSettings ./your/file\n"
     );
-    return;
   }
 
   if (!argv._[0]) {
-    error(
-      "\n\nYou must specify which platform you want to build.\nUse rnp android or rnp ios\n"
+    throw new Error(
+      "You must specify which platform you want to build.\nUse rnp android or rnp ios\n"
     );
-    return;
   }
 }
 

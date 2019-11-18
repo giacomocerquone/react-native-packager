@@ -3,13 +3,18 @@
 const yargs = require("yargs");
 import path from "path";
 
-import { argvChecks, androidArgvChecks, iosArgvChecks } from "./lib/argvChecks";
+import {
+  argvChecks,
+  androidArgvChecks,
+  iosArgvChecks
+} from "./utils/argvChecks";
 import androidProc from "./lib/android";
 import iosProc from "./lib/ios";
-import { androidSettingsChecks } from "./lib/settingsChecks";
+import { androidSettingsChecks } from "./utils/settingsChecks";
 
 import { Arguments } from "./types/arguments";
 import { Settings } from "./types/settings";
+import { error } from "./utils/log";
 
 const argv: Arguments = yargs.options({
   bldSettings: { type: "string" },
@@ -19,11 +24,10 @@ const argv: Arguments = yargs.options({
   iosPath: { type: "string" }
 }).argv;
 
-(async () => {
+try {
   argvChecks(argv);
-  const sets: Settings = await import(
-    path.join(process.cwd(), argv.bldSettings)
-  );
+
+  const sets: Settings = require(path.join(process.cwd(), argv.bldSettings));
 
   if (argv._[0] === "android") {
     androidArgvChecks(argv);
@@ -33,4 +37,6 @@ const argv: Arguments = yargs.options({
     iosArgvChecks(argv);
     iosProc(argv.iosPath, sets);
   }
-})();
+} catch (e) {
+  error(e.message);
+}

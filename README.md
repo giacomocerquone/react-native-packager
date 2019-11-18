@@ -1,4 +1,4 @@
-## react-native-packager
+## react-native-builder
 
 No more custom builds and strange native project configurations.
 Let's bring some order to this.
