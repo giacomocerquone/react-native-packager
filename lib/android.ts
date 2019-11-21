@@ -28,6 +28,17 @@ export default async function androidProc(
 
   const versionNameRegExp = /versionName (["'])(.*)["']/;
   const versionCodeRegExp = /versionCode (\d+)/;
+  const currentVersionName = gradleFile.match(versionNameRegExp);
+  const currentVersionCode = gradleFile.match(versionCodeRegExp);
+
+  if (!currentVersionName || !currentVersionCode) {
+    throw new Error(`In your build.gradle there must be a versionCode and a versionNumber specified like this:
+    defaultConfig {
+      ...
+      versionCode 1
+      versionName "1.0.0"
+    }`);
+  }
 
   const answers = await prompts([
     {

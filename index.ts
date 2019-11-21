@@ -24,19 +24,21 @@ const argv: Arguments = yargs.options({
   iosPath: { type: "string" }
 }).argv;
 
-try {
-  argvChecks(argv);
+(async () => {
+  try {
+    argvChecks(argv);
 
-  const sets: Settings = require(path.join(process.cwd(), argv.bldSettings));
+    const sets: Settings = require(path.join(process.cwd(), argv.bldSettings));
 
-  if (argv._[0] === "android") {
-    androidArgvChecks(argv);
-    androidSettingsChecks(sets, argv.bldSettings);
-    androidProc(argv.gradlePath, argv.gradleWPath, argv.bundle, sets);
-  } else if (argv._[0] === "ios") {
-    iosArgvChecks(argv);
-    iosProc(argv.iosPath, sets);
+    if (argv._[0] === "android") {
+      androidArgvChecks(argv);
+      androidSettingsChecks(sets, argv.bldSettings);
+      await androidProc(argv.gradlePath, argv.gradleWPath, argv.bundle, sets);
+    } else if (argv._[0] === "ios") {
+      iosArgvChecks(argv);
+      iosProc(argv.iosPath, sets);
+    }
+  } catch (e) {
+    error(e.message);
   }
-} catch (e) {
-  error(e.message);
-}
+})();

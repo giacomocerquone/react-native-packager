@@ -8,6 +8,7 @@
   "scripts": {
     "start": "ts-node index.ts",
     "build": "tsc",
+    "prepublish": "tsc",
     "deploy": "npm run build && npm link ."
   },
   "author": "Giacomo Cerquone",
