@@ -84,13 +84,13 @@ export default async function androidProc(
     KEYSTORE_ALIAS,
     KEYSTORE_PWD,
     KEY_PWD,
-    APP_ID
+    ANDROID_APP_ID
   } = bldSettings;
 
   const proc = spawn(
     `${path.basename(
       gradleWPath
-    )} clean ${bundleType} -PANDROID_APP_ID=${APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`,
+    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`,
     {
       cwd: path.dirname(gradleWPath),
       shell: true,

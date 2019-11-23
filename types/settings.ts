@@ -3,5 +3,5 @@ export interface Settings {
   KEYSTORE_ALIAS: string;
   KEYSTORE_PWD: string;
   KEY_PWD: string;
-  APP_ID: string;
+  ANDROID_APP_ID: string;
 }
