@@ -87,14 +87,16 @@ export default async function androidProc(
     ANDROID_APP_ID
   } = bldSettings;
 
+  const wait = `node -e "console.log('Press any key to exit'); process.stdin.setRawMode(true); process.stdin.resume(); process.stdin.on('data', process.exit.bind(process, 0));"`;
+
   const proc = spawn(
-    `${path.basename(
+    `${process.platform === "win32" ? 'cmd /c "' : ""}${path.basename(
       gradleWPath
-    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`,
+    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD} || ${wait}${process.platform === "win32" ? '"' : ""}`,
     {
       cwd: path.dirname(gradleWPath),
       shell: true,
-      detached: false, // TODO I wish the terminal to stay put when erroring instead of closing itself
+      detached: true, // TODO I wish the terminal to stay put when erroring instead of closing itself
       stdio: [0, "pipe", "pipe"]
     }
   );
