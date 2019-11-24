@@ -90,8 +90,7 @@ export default async function androidProc(
   const waitCommand = `node -e "console.log('Press any key to exit'); process.stdin.setRawMode(true); process.stdin.resume(); process.stdin.on('data', process.exit.bind(process, 1));"`;
 
   const cwd: string = path.dirname(gradleWPath);
-  const terminal: string =
-    process.env.REACT_TERMINAL || process.env.TERM_PROGRAM || "";
+  const terminal: string | undefined = process.env.TERM_PROGRAM;
 
   let proc: any;
 
@@ -107,9 +106,14 @@ export default async function androidProc(
       stdio: [0, "pipe", "pipe"]
     });
   } else if (process.platform === "darwin") {
-    const buildCommand = `open -a ${terminal} "${path.basename(
+    const buildCommand = `open "${path.basename(
       gradleWPath
     )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD} || ${waitCommand}" `;
+
+    writeFileSync("buildCommand.sh", buildCommand, {
+      encoding: "utf8",
+      flag: "w"
+    });
 
     proc = spawn(buildCommand, {
       cwd,
