@@ -87,19 +87,37 @@ export default async function androidProc(
     ANDROID_APP_ID
   } = bldSettings;
 
-  const wait = `node -e "console.log('Press any key to exit'); process.stdin.setRawMode(true); process.stdin.resume(); process.stdin.on('data', process.exit.bind(process, 0));"`;
+  const waitCommand = `node -e "console.log('Press any key to exit'); process.stdin.setRawMode(true); process.stdin.resume(); process.stdin.on('data', process.exit.bind(process, 1));"`;
 
-  const proc = spawn(
-    `${process.platform === "win32" ? 'cmd /c "' : ""}${path.basename(
+  const cwd: string = path.dirname(gradleWPath);
+  const terminal: string =
+    process.env.REACT_TERMINAL || process.env.TERM_PROGRAM || "";
+
+  let proc: any;
+
+  if (/^win/.test(process.platform)) {
+    const buildCommand = `cmd.exe /C "${path.basename(
       gradleWPath
-    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD} || ${wait}${process.platform === "win32" ? '"' : ""}`,
-    {
-      cwd: path.dirname(gradleWPath),
+    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD} || ${waitCommand}"`;
+
+    proc = spawn(buildCommand, {
+      cwd,
+      detached: true,
       shell: true,
-      detached: true, // TODO I wish the terminal to stay put when erroring instead of closing itself
       stdio: [0, "pipe", "pipe"]
-    }
-  );
+    });
+  } else if (process.platform === "darwin") {
+    const buildCommand = `open -a ${terminal} "${path.basename(
+      gradleWPath
+    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD} || ${waitCommand}" `;
+
+    proc = spawn(buildCommand, {
+      cwd,
+      shell: true,
+      stdio: [0, "pipe", "pipe"]
+    });
+  } else if (process.platform === "linux") {
+  }
 
   proc.on("exit", function(code: Buffer) {
     if (code.toString() === "0") {
@@ -112,10 +130,10 @@ export default async function androidProc(
     process.exit();
   });
 
-  proc!.stderr!.on("data", function(data) {
+  proc!.stderr!.on("data", function(data: any) {
     console.log(data.toString());
   });
-  proc!.stdout!.on("data", data => {
+  proc!.stdout!.on("data", (data: any) => {
     console.log(data.toString());
   });
 }
