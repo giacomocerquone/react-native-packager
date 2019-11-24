@@ -106,19 +106,21 @@ export default async function androidProc(
       stdio: [0, "pipe", "pipe"]
     });
   } else if (process.platform === "darwin") {
-    const buildCommand = `open "${path.basename(
+    const buildCommand = `
+    #!/bin/bash
+    cd ${cwd}
+    ./${path.basename(
       gradleWPath
-    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD} || ${waitCommand}" `;
+    )} clean ${bundleType} -PANDROID_APP_ID=${ANDROID_APP_ID} -PMYAPP_RELEASE_STORE_FILE=${KEYSTORE_FILE} -PMYAPP_RELEASE_KEY_ALIAS=${KEYSTORE_ALIAS} -PMYAPP_RELEASE_STORE_PASSWORD=${KEYSTORE_PWD} -PMYAPP_RELEASE_KEY_PASSWORD=${KEY_PWD}`;
 
-    writeFileSync("buildCommand.sh", buildCommand, {
+    writeFileSync(path.join(__dirname, "android-build.command"), buildCommand, {
       encoding: "utf8",
       flag: "w"
     });
 
-    proc = spawn(buildCommand, {
+    proc = spawn("open", [path.join(__dirname, "android-build.command")], {
       cwd,
-      shell: true,
-      stdio: [0, "pipe", "pipe"]
+      shell: true
     });
   } else if (process.platform === "linux") {
   }
