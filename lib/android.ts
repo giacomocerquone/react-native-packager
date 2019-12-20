@@ -1,6 +1,6 @@
 import path from "path";
 import prompts from "prompts";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, chmodSync } from "fs";
 import { spawn } from "child_process";
 
 import { Settings } from "../types/settings";
@@ -117,6 +117,8 @@ export default async function androidProc(
       encoding: "utf8",
       flag: "w"
     });
+
+    chmodSync(path.join(__dirname, "android-build.command"), "755");
 
     proc = spawn("open", [path.join(__dirname, "android-build.command")], {
       cwd,
