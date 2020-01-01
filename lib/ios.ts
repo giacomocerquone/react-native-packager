@@ -39,7 +39,7 @@ export default async function iosProc(
       {
         type: "text",
         name: "buildName",
-        message: `Insert new Version (current ${buildName})`,
+        message: `Insert new Build Name (current ${buildName})`,
         initial: buildName
       },
       {
