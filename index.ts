@@ -10,7 +10,10 @@ import {
 } from "./utils/argvChecks";
 import androidProc from "./lib/android";
 import iosProc from "./lib/ios";
-import { androidSettingsChecks } from "./utils/settingsChecks";
+import {
+  androidSettingsChecks,
+  iosSettingsChecks
+} from "./utils/settingsChecks";
 
 import { Arguments } from "./types/arguments";
 import { Settings } from "./types/settings";
@@ -19,9 +22,16 @@ import { error } from "./utils/log";
 const argv: Arguments = yargs.options({
   bldSettings: { type: "string" },
   bundle: { type: "string" },
-  gradlePath: { type: "string" },
-  gradleWPath: { type: "string" },
-  iosPath: { type: "string" }
+  gradlePath: {
+    type: "string",
+    default: path.join(process.cwd(), "./android/app/build.gradle")
+  },
+  gradleWPath: {
+    type: "string",
+    default: path.join(process.cwd(), "./android/gradlew")
+  },
+  iosPath: { type: "string", default: path.join(process.cwd(), "./ios/") },
+  xcodeproj: { type: "boolean", default: false }
 }).argv;
 
 (async () => {
@@ -36,7 +46,8 @@ const argv: Arguments = yargs.options({
       await androidProc(argv.gradlePath, argv.gradleWPath, argv.bundle, sets);
     } else if (argv._[0] === "ios") {
       iosArgvChecks(argv);
-      iosProc(argv.iosPath, sets);
+      iosSettingsChecks(sets, argv.bldSettings);
+      iosProc(argv.iosPath, argv.xcodeproj, sets);
     }
   } catch (e) {
     error(e.message);

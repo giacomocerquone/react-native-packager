@@ -18,3 +18,16 @@ export function androidSettingsChecks(sets: Settings, setsFilename: string) {
     );
   }
 }
+
+export function iosSettingsChecks(sets: Settings, setsFilename: string) {
+  const appId = sets.IOS_APP_ID;
+  const iosProjectName = sets.IOS_PROJECT_NAME;
+
+  if (!appId || !iosProjectName) {
+    throw new Error(
+      `\nYou must export the following variables from ${setsFilename}:\n
+- IOS_APP_ID
+- IOS_PROJECT_NAME\n`
+    );
+  }
+}

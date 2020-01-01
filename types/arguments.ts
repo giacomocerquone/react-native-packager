@@ -5,4 +5,5 @@ export interface Arguments {
   bldSettings: string;
   gradleWPath: string;
   bundle: string;
+  xcodeproj: boolean;
 }

@@ -35,6 +35,13 @@ export function androidArgvChecks(argv: Arguments) {
 
 export function iosArgvChecks(argv: Arguments) {
   if (!argv.iosPath) {
-    warning("Ios path defaulting to ./ios");
+    warning(
+      "Ios path defaulting to ./ios\nIf you want a different path specify it with --iosPath"
+    );
+  }
+  if (argv.xcodeproj === null || typeof argv.xcodeproj === "undefined") {
+    warning(
+      "Defaulting to xcworkspace\nIf you want to change between project or workspace, specify it with --xcodeproj='true/false'"
+    );
   }
 }

@@ -7,14 +7,11 @@ import { Settings } from "../types/settings";
 import { info, error } from "../utils/log";
 
 export default async function androidProc(
-  gradle: string,
-  gradleW: string,
+  gradlePath: string,
+  gradleWPath: string,
   bundle: string,
   bldSettings: Settings
 ) {
-  const gradlePath =
-    gradle || path.join(process.cwd(), "./android/app/build.gradle");
-  const gradleWPath = gradleW || path.join(process.cwd(), "./android/gradlew");
   const bundleType = bundle === "aab" ? "bundleRelease" : "assembleRelease";
 
   let gradleFile: string;
@@ -46,14 +43,16 @@ export default async function androidProc(
       name: "versionName",
       message: `Insert new Version Name (current ${
         gradleFile.match(versionNameRegExp)![0]
-      } )`
+      } )`,
+      initial: gradleFile.match(versionNameRegExp)![0]
     },
     {
       type: "number",
       name: "versionCode",
       message: `Insert new Version Code (current ${
         gradleFile.match(versionCodeRegExp)![0]
-      } )`
+      } )`,
+      initial: gradleFile.match(versionCodeRegExp)![0]
     }
   ]);
 
@@ -90,7 +89,7 @@ export default async function androidProc(
   const waitCommand = `node -e "console.log('Press any key to exit'); process.stdin.setRawMode(true); process.stdin.resume(); process.stdin.on('data', process.exit.bind(process, 1));"`;
 
   const cwd: string = path.dirname(gradleWPath);
-  const terminal: string | undefined = process.env.TERM_PROGRAM;
+  const terminal: string | undefined = process.env.TERM_PROGRAM; // this doesn't work correctly in osx
 
   let proc: any;
 
@@ -125,6 +124,7 @@ export default async function androidProc(
       shell: true
     });
   } else if (process.platform === "linux") {
+    // TODO
   }
 
   proc.on("exit", function(code: Buffer) {
