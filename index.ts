@@ -24,13 +24,14 @@ const argv: Arguments = yargs.options({
   bundle: { type: "string" },
   gradlePath: {
     type: "string",
-    default: path.join(process.cwd(), "./android/app/build.gradle")
+    default: "./android/app/build.gradle"
   },
   gradleWPath: {
     type: "string",
-    default: path.join(process.cwd(), "./android/gradlew")
+    default: "./android/gradlew"
   },
-  iosPath: { type: "string", default: path.join(process.cwd(), "./ios/") },
+  iosPath: { type: "string", default: "./ios/" },
+  iosExportOptions: { type: "string", default: "./exportOptions.plist" },
   xcodeproj: { type: "boolean", default: false }
 }).argv;
 
@@ -39,6 +40,10 @@ const argv: Arguments = yargs.options({
     argvChecks(argv);
 
     const sets: Settings = require(path.join(process.cwd(), argv.bldSettings));
+    argv.gradlePath = path.join(process.cwd(), argv.gradlePath);
+    argv.gradleWPath = path.join(process.cwd(), argv.gradleWPath);
+    argv.iosPath = path.join(process.cwd(), argv.iosPath);
+    argv.iosExportOptions = path.join(process.cwd(), argv.iosExportOptions);
 
     if (argv._[0] === "android") {
       androidArgvChecks(argv);
@@ -47,7 +52,7 @@ const argv: Arguments = yargs.options({
     } else if (argv._[0] === "ios") {
       iosArgvChecks(argv);
       iosSettingsChecks(sets, argv.bldSettings);
-      iosProc(argv.iosPath, argv.xcodeproj, sets);
+      await iosProc(argv.iosPath, argv.iosExportOptions, argv.xcodeproj, sets);
     }
   } catch (e) {
     error(e.message);

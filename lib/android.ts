@@ -133,7 +133,6 @@ export default async function androidProc(
       try {
         process.kill(+proc.pid + 1, 0); // oh shit, it works
       } catch (e) {
-        console.log(e);
         info(
           "Android build finished. Build will be at android/app/build/outputs/[apk/app-release.apk]/[aab/app.aab]"
         );

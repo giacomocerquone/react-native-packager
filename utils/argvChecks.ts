@@ -34,6 +34,11 @@ export function androidArgvChecks(argv: Arguments) {
 }
 
 export function iosArgvChecks(argv: Arguments) {
+  if (!argv.iosExportOptions) {
+    throw new Error(
+      "You must specify you exportOptions.plist file for ios through --iosExportOptions ./your/file\n"
+    );
+  }
   if (!argv.iosPath) {
     warning(
       "Ios path defaulting to ./ios\nIf you want a different path specify it with --iosPath"

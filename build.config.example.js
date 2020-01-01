@@ -5,5 +5,6 @@ module.exports = {
   KEY_PWD: "pwd",
   ANDROID_APP_ID: "org.sampleapp",
   IOS_APP_ID: "org.sampleapp",
-  IOS_PROJECT_NAME: "Project"
+  IOS_PROJECT_NAME: "Project",
+  IOS_SCHEME: "Project"
 };

@@ -6,4 +6,5 @@ export interface Settings {
   ANDROID_APP_ID: string;
   IOS_PROJECT_NAME: string;
   IOS_APP_ID: string;
+  IOS_SCHEME: string;
 }
