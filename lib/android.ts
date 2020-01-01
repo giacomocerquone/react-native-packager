@@ -44,7 +44,10 @@ export default async function androidProc(
       message: `Insert new Version Name (current ${
         gradleFile.match(versionNameRegExp)![0]
       } )`,
-      initial: gradleFile.match(versionNameRegExp)![0]
+      initial: gradleFile
+        .match(versionNameRegExp)![0]
+        .replace("versionName ", "")
+        .replace(/"/g, "")
     },
     {
       type: "number",
@@ -52,7 +55,9 @@ export default async function androidProc(
       message: `Insert new Version Code (current ${
         gradleFile.match(versionCodeRegExp)![0]
       } )`,
-      initial: gradleFile.match(versionCodeRegExp)![0]
+      initial: gradleFile
+        .match(versionCodeRegExp)![0]
+        .replace("versionCode ", "")
     }
   ]);
 
@@ -123,19 +128,33 @@ export default async function androidProc(
       cwd,
       shell: true
     });
+
+    setInterval(() => {
+      try {
+        process.kill(+proc.pid + 1, 0); // oh shit, it works
+      } catch (e) {
+        console.log(e);
+        info(
+          "Android build finished. Build will be at android/app/build/outputs/[apk/app-release.apk]/[aab/app.aab]"
+        );
+        process.exit();
+      }
+    }, 1000);
   } else if (process.platform === "linux") {
     // TODO
   }
 
   proc.on("exit", function(code: Buffer) {
-    if (code.toString() === "0") {
-      info(
-        "Android build finished. Build will be at android/app/build/outputs/[apk/app-release.apk]/[aab/app.aab]"
-      );
-    } else {
-      error("A problem occurred while building");
+    if (process.platform !== "darwin") {
+      if (code.toString() === "0") {
+        info(
+          "Android build finished. Build will be at android/app/build/outputs/[apk/app-release.apk]/[aab/app.aab]"
+        );
+      } else {
+        error("A problem occurred while building");
+      }
+      process.exit();
     }
-    process.exit();
   });
 
   proc!.stderr!.on("data", function(data: any) {
