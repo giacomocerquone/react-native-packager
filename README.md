@@ -1,3 +1,7 @@
+# DISCLAIMER - not maintained
+Started this as a funny side project to work on, but I switched to fastlane many months ago and so I don't see how this could be useful.
+Open an issue if you have some idea in mind on what we could do with it :)
+
 ## react-native-builder
 
 No more custom builds and strange native project configurations.
